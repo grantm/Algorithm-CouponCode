@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <title>CouponCode Test Page</title>
+  <script type="text/javascript" src="jquery-1.4.2.min.js"></script>
+  <script type="text/javascript" src="jquery.couponcode.js"></script>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <script type="text/javascript">
+
+    jQuery(document).ready(function(){
+
+        (function ($) {
+            $('#registration-code').couponCode({
+                template: '4-4-4'
+            });
+        })(jQuery);
+
+    });
+  </script>
+</head>
+<body>
+
+  <h1>CouponCode Test Page</h1>
+
+  <form>
+    <input id="registration-code" name="registration_code" />
+    <input type="submit" value="Continue" />
+  </form>
+
+  <pre>Sample codes:
+XACW-48AB-N0VA
+MN1P-18XM-SHS6
+6Z22-96Y0-V9SS
+HFG0-VFRP-NK84
+G7MD-4XE8-RPW4
+G0X5-7AB2-Q6W6
+XTGH-FK5A-9W2D
+AYDH-ED4V-Z9ZS
+4RTC-FGW5-53PW
+BR6S-3Z7T-XNHA</pre>
+
+</body>
+</html>
