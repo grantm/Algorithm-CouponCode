@@ -5,3 +5,12 @@ algorithm_b    0.63%    1.24%    0.62%
 algorithm_c   10.17%   11.72%    9.67%
 algorithm_d   10.58%   10.47%   10.68%
 
+
+After adding position argument to checksummers, adding 'cuss' counts and set D:
+
+                  Set A         Set B         Set C         Set D
+algorithm_a    21.36% ( 3)    1.60% ( 3)    1.39% ( 3)    1.17% ( 1)
+algorithm_b     0.62% ( 5)    1.23% ( 5)    0.61% ( 6)    0.39% ( 3)
+algorithm_c    10.17% ( 6)   11.72% ( 6)    9.67% ( 4)    9.38% ( 5)
+algorithm_d    29.77% ( 5)   29.70% ( 4)   29.82% ( 2)   29.62% ( 1)
+
