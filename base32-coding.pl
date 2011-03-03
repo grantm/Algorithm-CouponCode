@@ -7,10 +7,10 @@ use strict;
 use warnings;
 
 my %algorithm = (
-    a => \&algorithm_a,                            # the original
-    b => \&algorithm_b,                            # mod 31 instead of 29
-    c => \&algorithm_c,                            # use 5 LSB rather than mod
-    d => \&algorithm_d,                            # rotation + XOR
+    a  => \&algorithm_a,                            # the original
+    b  => \&algorithm_b,                            # mod 31 instead of 29
+    c  => \&algorithm_c,                            # use 5 LSB rather than mod
+    d  => \&algorithm_d,                            # rotation + XOR
 );
 my %symbol_set = (
     A => '0123456789ABCDEFGHJKMNPQRSTVWXYZ',
@@ -30,14 +30,18 @@ foreach my $alg ( sort keys %algorithm) {
         my $total     = 0;
         my $bad_swaps = 0;
         my $bad_reads = 0;
+        my $bad_pos   = 0;
         foreach my $x ( @sym ) {
             foreach my $y ( @sym ) {
                 foreach my $z ( @sym ) {
                     my $code = "$x$y$z";
-                    $code .= $check_sub->($code);
-                    $total++;
-                    $bad_swaps += check_swaps($code);
-                    $bad_reads += check_reads($code);
+                    foreach my $pos (0, 1, 2) {
+                        my $pcode = $code . $check_sub->($code, $pos);
+                        $total++;
+                        $bad_swaps += check_swaps($pcode, $pos);
+                        $bad_reads += check_reads($pcode, $pos);
+                        $bad_pos   += check_pos($pcode, $pos);
+                    }
                 }
             }
         }
@@ -51,7 +55,13 @@ foreach my $alg ( sort keys %algorithm) {
             "Total bad reads:       %5u ( %5.2f%%)\n",
             $bad_reads, 100 * $bad_reads / $total
         );
-        my $rate = sprintf("%4.2f", 100 * ($bad_swaps + $bad_reads) / $total);
+        printf(
+            "Total bad pos:         %5u ( %5.2f%%)\n",
+            $bad_pos, 100 * $bad_pos / $total
+        );
+        my $rate = sprintf(
+            "%4.2f", 100 * ($bad_swaps + $bad_reads + $bad_pos) / $total
+        );
         printf("False positive rate:   %s%%\n\n", $rate);
 
         $tally{$alg}{$set} = $rate;
@@ -60,12 +70,12 @@ foreach my $alg ( sort keys %algorithm) {
 
 # Print accumulated results
 
-print "          ";
+print "           ";
 print "    Set $_" foreach ( sort keys %symbol_set );
 print "\n";
 
 foreach my $alg ( sort keys %algorithm ) {
-    print "algorithm_$alg";
+    printf("algorithm_%2s", $alg);
     foreach my $set ( sort keys %symbol_set ) {
         printf("%8s%%", $tally{$alg}{$set});
     }
@@ -76,7 +86,7 @@ exit;
 
 
 sub check_swaps {
-    my($orig) = @_;
+    my($orig, $pos) = @_;
 
     my $bad = 0;
     my($a, $b, $c, $d) = split //, $orig;
@@ -86,7 +96,7 @@ sub check_swaps {
         "$a$b$d$c",
     ) {
         next if $code eq $orig;
-        if($check_sub->(substr($code, 0, 3)) eq substr($code, 3, 1)) {
+        if($check_sub->(substr($code, 0, 3), $pos) eq substr($code, 3, 1)) {
             $bad++;
         }
     }
@@ -95,7 +105,7 @@ sub check_swaps {
 
 
 sub check_reads {
-    my($orig) = @_;
+    my($orig, $pos) = @_;
 
     my @try = map { [ $_ ] } split //, $orig;
     foreach (@try) {
@@ -112,7 +122,7 @@ sub check_reads {
                 foreach my $d ( @{ $try[3] } ) {
                     my $code = "$a$b$c$d";
                     next if $code eq $orig;
-                    if($check_sub->(substr($code, 0, 3)) eq substr($code, 3, 1)) {
+                    if($check_sub->(substr($code, 0, 3), $pos) eq substr($code, 3, 1)) {
                         $bad++;
                     }
                 }
@@ -123,10 +133,26 @@ sub check_reads {
 }
 
 
-sub algorithm_a {
-    my @char = split //, shift;
+sub check_pos {
+    my($orig, $pos) = @_;
 
-    my $check = 0;
+    my $bad  = 0;
+    my $code = substr($orig, 0, 3);
+    foreach my $i ( 0, 1, 2 ) {
+        next if $pos == $i;
+        if($check_sub->($code, $i) eq substr($orig, 3, 1)) {
+            $bad++;
+        }
+    }
+    return $bad;
+}
+
+
+sub algorithm_a {
+    my($data, $pos) = @_;
+    my @char = split //, $data;
+
+    my $check = $pos;
     foreach my $i (0..2) {
         my $k = index($sym, $char[$i]);
         $check = $check * 19 + $k;
@@ -136,9 +162,10 @@ sub algorithm_a {
 
 
 sub algorithm_b {
-    my @char = split //, shift;
+    my($data, $pos) = @_;
+    my @char = split //, $data;
 
-    my $check = 0;
+    my $check = $pos;
     foreach my $i (0..2) {
         my $k = index($sym, $char[$i]);
         $check = $check * 19 + $k;
@@ -148,9 +175,10 @@ sub algorithm_b {
 
 
 sub algorithm_c {
-    my @char = split //, shift;
+    my($data, $pos) = @_;
+    my @char = split //, $data;
 
-    my $check = 0;
+    my $check = $pos;
     foreach my $i (0..2) {
         my $k = index($sym, $char[$i]);
         $check = $check * 19 + $k;
@@ -160,9 +188,10 @@ sub algorithm_c {
 
 
 sub algorithm_d {
-    my @char = split //, shift;
+    my($data, $pos) = @_;
+    my @char = split //, $data;
 
-    my $check = 0;
+    my $check = $pos;
     foreach my $i (0..2) {
         my $k = index($sym, $char[$i]);
         $check = ($check + $k) << 3;
