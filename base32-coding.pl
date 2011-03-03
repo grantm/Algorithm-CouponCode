@@ -16,8 +16,10 @@ my %symbol_set = (
     A => '0123456789ABCDEFGHJKMNPQRSTVWXYZ',
     B => '0123456789ABCDEFGHJKMNPQRSTVWXZY',       # X & Y swapped
     C => '0123456789ABCDEFGHJKLMNPQRSTVWXY',       # Add L, Drop Z
+    D => '0123456789ABCDEFGHJKLMNPQRTUVWXY',       # Add L & U, Drop S & Z
 );
-my($sym, @sym, $check_sub, %tally);
+my($sym, @sym, $check_sub, %tally, %sully);
+my $cuss_words = make_cuss_regex();
 
 foreach my $alg ( sort keys %algorithm) {
     foreach my $set ( sort keys %symbol_set) {
@@ -31,6 +33,7 @@ foreach my $alg ( sort keys %algorithm) {
         my $bad_swaps = 0;
         my $bad_reads = 0;
         my $bad_pos   = 0;
+        my $cuss      = 0;
         foreach my $x ( @sym ) {
             foreach my $y ( @sym ) {
                 foreach my $z ( @sym ) {
@@ -41,6 +44,7 @@ foreach my $alg ( sort keys %algorithm) {
                         $bad_swaps += check_swaps($pcode, $pos);
                         $bad_reads += check_reads($pcode, $pos);
                         $bad_pos   += check_pos($pcode, $pos);
+                        $cuss      += check_cuss($pcode, $pos);
                     }
                 }
             }
@@ -63,21 +67,23 @@ foreach my $alg ( sort keys %algorithm) {
             "%4.2f", 100 * ($bad_swaps + $bad_reads + $bad_pos) / $total
         );
         printf("False positive rate:   %s%%\n\n", $rate);
+        printf("Total cuss words:      %5u\n", $cuss);
 
         $tally{$alg}{$set} = $rate;
+        $sully{$alg}{$set} = $cuss;
     }
 }
 
 # Print accumulated results
 
-print "           ";
-print "    Set $_" foreach ( sort keys %symbol_set );
+print "              ";
+print "    Set $_     " foreach ( sort keys %symbol_set );
 print "\n";
 
 foreach my $alg ( sort keys %algorithm ) {
-    printf("algorithm_%2s", $alg);
+    printf("algorithm_%-2s", $alg);
     foreach my $set ( sort keys %symbol_set ) {
-        printf("%8s%%", $tally{$alg}{$set});
+        printf("%8s%% (%2u)", $tally{$alg}{$set}, $sully{$alg}{$set});
     }
     print "\n";
 }
@@ -145,6 +151,32 @@ sub check_pos {
         }
     }
     return $bad;
+}
+
+
+sub check_cuss {
+    my($orig, $pos) = @_;
+
+    return 0 unless $orig =~ $cuss_words;
+    print "Cuss word: $orig\n";
+    return 1;
+}
+
+
+sub make_cuss_regex {
+    my $words = join '|', map {
+        s/[I1]/[I1]/g;
+        s/[O0]/[O0]/g;
+        s/[S5]/[S5]/g;
+        s/[Z2]/[Z2]/g;
+        s/[E3]/[E3]/g;
+        $_;
+    } map { uc($_) } qw (
+        fuck cunt wank wang piss cock shit twat tits fart hell muff dick knob
+        arse shag toss slut turd slag crap poop butt feck boob jism jizz
+    );
+
+    return qr{\A(?:$words)\z};
 }
 
 
