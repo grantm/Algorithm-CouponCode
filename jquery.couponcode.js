@@ -45,7 +45,6 @@ $.fn.couponCode.build = function(base_entry, options) {
         };
         inner.append(input);
     });
-    console.log("Template looks good: ", self.template);
 
     wrapper.append(inner);
 
