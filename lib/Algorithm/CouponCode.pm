@@ -1,24 +1,138 @@
 package Algorithm::CouponCode;
 
-use warnings;
-use strict;
-
 =head1 NAME
 
 Algorithm::CouponCode - Generate and validate 'CouponCode' strings
 
 =cut
 
+use 5.010;
+use warnings;
+use strict;
+use autodie;
+
 our $VERSION = '1.000';
 
 
+use Try::Tiny;
+use Exporter     qw(import);
+use Digest::SHA1 qw(sha1);
+
+
+our @EXPORT_OK   = qw(cc_generate cc_validate make_bad_regex);
+
+my $sym_str      = '0123456789ABCDEFGHJKLMNPQRTUVWXY';
+my @sym          = split //, $sym_str;
+my $urandom_path = '/dev/urandom';
+my $have_urandom = -r $urandom_path;
+my $bad_regex    = make_bad_regex();
+
+
 sub cc_generate {
+    my %arg = @_;
+
+    my $parts     = $arg{parts} || 3;
+    my $plaintext = $arg{plaintext} // _random_plaintext();
+    my $bad_words = $arg{bad_regex} || $bad_regex;
+    my($sha1_hash);
+
+    RETRY: while(1) {
+        $sha1_hash = sha1($plaintext);
+        my @bytes  = map { ord($_) & 31 } split //, $sha1_hash;
+        my @code;
+        foreach my $i (1..$parts) {
+            my $str = join '', map { $sym[shift @bytes] } (0, 1, 2);
+            push @code, $str . _checkdigit_alg_1($str, $i);
+            next RETRY if $code[-1] =~ $bad_words;
+            next RETRY if _valid_when_swapped($code[-1], $i);
+        }
+        return join '-', @code;
+    }
+    continue {
+        $plaintext = $sha1_hash;
+    }
 }
 
 
 sub cc_validate {
 }
 
+
+sub make_bad_regex {
+    my %arg = @_;
+
+    my @word_list = _default_bad_word_list();
+    if($arg{words}) {
+        if($arg{mode} && $arg{mode} eq 'replace') {
+            @word_list = @{ $arg{words} };
+        }
+        else {
+            push @word_list, @{ $arg{words} };
+        }
+    }
+    my $words = join '|', map {
+        $_ = uc($_);
+        s/[I1]/[I1]/g;
+        s/[O0]/[O0]/g;
+        s/[S5]/[S5]/g;
+        s/[Z2]/[Z2]/g;
+        s/[E3]/[E3]/g;
+        $_;
+    } @word_list;
+    return qr{\A(?:$words)\z};
+}
+
+
+sub _default_bad_word_list {
+    # Yay for rot13
+    return map { my $w = $_; $w =~ tr/A-Z/N-ZA-M/; $w } qw{
+        SHPX PHAG JNAX JNAT CVFF PBPX FUVG GJNG GVGF SNEG URYY ZHSS QVPX XABO
+        NEFR FUNT GBFF FYHG GHEQ FYNT PENC CBBC OHGG SRPX OBBO WVFZ WVMM CUNG
+    };
+}
+
+
+sub _random_plaintext {
+    if($have_urandom) {
+        open my $fh, '<', $urandom_path;
+        sysread $fh, my $buf, 8;
+        return $fh;
+    }
+    else {
+        return $$ . localtime() . rand();
+    }
+}
+
+
+sub _checkdigit_alg_1 {
+    my($data, $pos) = @_;
+    my @char = split //, $data;
+
+    my $check = $pos;
+    foreach my $i (0..2) {
+        my $k = index($sym_str, $char[$i]);
+        $check = $check * 19 + $k;
+    }
+    return $sym[ $check % 31 ];
+}
+
+
+sub _valid_when_swapped {
+    my($orig, $pos) = @_;
+
+    my($a, $b, $c, $d) = split //, $orig;
+    foreach my $code (
+        "$b$a$c$d",
+        "$a$c$b$d",
+        "$a$b$d$c",
+    ) {
+        next if $code eq $orig;
+        if(_checkdigit_alg_1(substr($code, 0, 3), $pos) eq substr($code, 3, 1)) {
+            return 1;
+        }
+    }
+    return 0;
+}
 
 1;
 __END__
@@ -42,7 +156,7 @@ __END__
 A 'Coupon Code' is made up of letters and numbers grouped into 4 character
 'parts'.  For example, a 3-part code might look like this:
 
-  T8FE-AYHW-1JP0
+  1K7Q-CTFM-LMTC
 
 Coupon Codes are random codes which are easy for the recipient to type
 accurately into a web form.  An example application might be to print a code on
@@ -160,7 +274,19 @@ The number of parts you expect the code to contain.  Default is 3.
 This function is used to compile a list of 4-letter words into a regular
 expression suitable for passing to the C<cc_generate()> function.  You would
 only need to do this if you wished to augment or replace the default list of
-undesirable words.
+undesirable words.  The following named parameters may be supplied:
+
+=over 4
+
+=item words
+
+A reference to an array of 4-letter words.  The parameter is mandatory.
+
+=item mode
+
+Either the word 'add' or the word 'replace'.  Default is 'add'.
+
+=back
 
 
 =head1 SUPPORT
