@@ -1,0 +1,13 @@
+MANIFEST.SKIP
+\.gitignore
+.*\.swp$
+^MANIFEST\.
+^Makefile$
+^blib/
+^debian/
+^pm_to_blib$
+^build-stamp$
+^install-stamp$
+^MakeMaker-\d
+\.old$
+\.bak$
