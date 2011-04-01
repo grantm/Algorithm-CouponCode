@@ -1,3 +1,15 @@
+body {
+  font-size: 18px;
+}
+
+form input {
+  font-size: 24px;
+}
+
+input#registration-code {
+  width: 9em;
+}
+
 input.jq-couponcode-part {
   font-family: monospace;
   width: 3em;
