@@ -96,7 +96,7 @@ sub _random_plaintext {
     if($have_urandom) {
         open my $fh, '<', $urandom_path;
         sysread $fh, my $buf, 8;
-        return $fh;
+        return $buf;
     }
     else {
         return $$ . localtime() . rand();
