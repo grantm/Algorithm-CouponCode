@@ -55,6 +55,22 @@ sub cc_generate {
 
 
 sub cc_validate {
+    my %arg = @_;
+
+    my $code   = $arg{code} or return;
+    my $parts  = $arg{parts} // 3;
+
+    $code =  uc($code);
+    $code =~ s{[^0-9A-Z]+}{}g;
+    $code =~ tr{OIZS}{0125};
+    my(@parts) = $code =~ m{([0-9A-Z]{4})}g;
+    return unless scalar(@parts) == $parts;
+
+    foreach my $i (1..$parts) {
+        my($str, $check) = $parts[$i - 1] =~ m{^(...)(.)};
+        return unless $check eq _checkdigit_alg_1($str, $i);
+    }
+    return join '-', @parts;
 }
 
 
@@ -145,11 +161,7 @@ __END__
 
   print cc_generate(parts => 3);  # generate a 3-part code
 
-  try {
-      cc_validate(code => $code, parts => 3);
-  } catch {
-      warn "Coupon Code not valid: $_";
-  };
+  my $valid_code = cc_validate(code => $code, parts => 3) or die "Invalid code";
 
 =head1 DESCRIPTION
 
@@ -186,7 +198,7 @@ submitted to the application's back-end validation.
 =item *
 
 The checkdigit algorithm takes into account the position of the part being
-keyed.  So for example 1X3E might be valid in the first part but not in the
+keyed.  So for example '1K7Q' might be valid in the first part but not in the
 second so if a user typed the parts in the wrong boxes then their error could
 be highlighted.
 
@@ -216,7 +228,7 @@ available or Perl's C<rand()> function otherwise).  In the event that an
 'inappropriate' code is created, the generated hash will be used as a
 plaintext input for generating a new hash and the process will be repeated.
 
-Each 4-character part encodes 15 bits of randomness, so a 3-part code will
+Each 4-character part encodes 15 bits of random data, so a 3-part code will
 incorporate 45 bits making a total of 2^45 (approximately 35 trillion) unique
 codes.
 
@@ -254,8 +266,9 @@ be used to turn a list of words into a suitable regular expression.
 
 =head2 cc_validate( options )
 
-Takes a code and validates the checkdigits.  Returns true on success or throws
-an exception on error.  The following named parameters may be supplied:
+Takes a code, cleans it up and validates the checkdigits.  Returns the
+normalised (and untainted) version of the code on success or undef on error.
+The following named parameters may be supplied:
 
 =over 4
 
