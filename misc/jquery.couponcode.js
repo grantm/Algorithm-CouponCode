@@ -11,7 +11,8 @@
 
 (function($) {
 
-var SYMBOL_SET = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
+var SYMBOL_SET = '0123456789ABCDEFGHJKLMNPQRTUVWXY';
+var BAD_SYMBOL = new RegExp('[^' + SYMBOL_SET + ']');
 
 $.fn.couponCode = function(options) {
     return this.each(function() {
@@ -20,80 +21,121 @@ $.fn.couponCode = function(options) {
 };
 
 $.fn.couponCode.build = function(base_entry, options) {
-    var $base_entry = $(base_entry);
-    var wrapper    = $( $base_entry.wrap('<span class="jq-couponcode" />').parent()[0] );
-    var inner      = $('<span class="jq-couponcode-inner" />');
-    var self       = $.extend({}, $.fn.couponCode.defaults, options);
-    self.part      = [];
-    if(! self.template.match(/^([345])(?:-([345]))*$/)) {
-        alert('Bad couponCode template: ' + self.template);
+    var self    = $.extend({}, $.fn.couponCode.defaults, options);
+    self.focus  = null;
+    self.inputs = [];
+    self.flags  = [];
+    self.parts  = parseInt(self.parts, 10);
+    if(isNaN(self.parts) || self.parts < 1 || self.parts > 6) {
+        alert("CouponCode 'parts' must be in range 1-6");
         return;
     }
-    $.each(self.template.split('-'), function(i, field_len) {
-        self.last_part = i;
+
+    var name    = base_entry.name;
+    var id      = base_entry.id;
+    var wrapper = $( $(base_entry).wrap('<span class="jq-couponcode" />').parent()[0] );
+    wrapper[0].removeChild(base_entry);
+    var hidden  = $('<input type="hidden">').attr({ 'name': name, 'id': id });
+    wrapper.append(hidden);
+    var inner   = $('<span class="jq-couponcode-inner" />');
+    for(var i = 0; i < self.parts; i++) {
         if(i > 0) {
             inner.append($('<span class="jq-couponcode-sep" />').text(self.separator));
         }
-        var input = $('<input type="text" class="jq-couponcode-part" />');
-        input.keypress(function(e)  {
-                  setTimeout( function() { validate(input, i, field_len, e.which != 0) }, 5 );
-              } )
-             .focusout(function()  { validate(input, i, field_len, false) } );
-        self.part[i] = {
-            'field_len' : field_len,
-            'input'     : input
-        };
-        inner.append(input);
+        self.inputs[i] = $('<input type="text" class="jq-couponcode-part" />');
+        inner.append(self.inputs[i]);
+    }
+    $( self.inputs ).each(function(i, input) {
+        input
+        .keypress(function() { setTimeout(function() { validate(i); }, 5 ); } )
+        .focusout(function() { self.focus = null; validate(i); } )
+        .focusin( function() { self.focus = i; } );
     });
-
     wrapper.append(inner);
 
-    function validate(input, index, field_len, focused) {
-        input.removeClass('jq-couponcode-good');
-        input.removeClass('jq-couponcode-bad');
-        self.part[index].value = null;
-        var val = input.val();
-        if(val == '') { return; }
-        var code = val.replace(/o/ig, '0').replace(/[il]/ig, '1').toUpperCase();
-        if(code.length > field_len || code.match(/[^0-9A-HJKMNP-TV-Z]/)) {
-            input.addClass('jq-couponcode-bad');
-            return;
+    function validate(index) {
+        var input  = self.inputs[index];
+        var result = validate_one_field(input, index);
+        if(result === true) {
+            input.removeClass('jq-couponcode-bad');
+            input.addClass('jq-couponcode-good');
+            self.flags[index] = 1;
         }
-        if(code.length < field_len) {
-            if(! focused) {
+        else {
+            input.removeClass('jq-couponcode-good');
+            input.removeClass('jq-couponcode-bad');
+            if(result === false) {
                 input.addClass('jq-couponcode-bad');
             }
-            return;
+            self.flags[index] = 0;
         }
-        var check = 0;
-        var last  = field_len - 1;
-        $.each(code.split(''), function(i, chr) {
-            var n = SYMBOL_SET.indexOf(chr);
-            if(i < last) {
-                check = check * 19 + n;
-            }
-            else if(chr != SYMBOL_SET.charAt(check % 29)) {
-                check = -1;
-            }
-        });
-        if(check == -1) {
-            input.addClass('jq-couponcode-bad');
-            return;
+        update_hidden_field();
+    }
+
+    function validate_one_field(input, index) {
+        var val = input.val();
+        var focussed = (self.focus === index);
+        if(val == '') { return; }
+        var code = clean_up( val );
+        if(code.length > 4 || BAD_SYMBOL.test(code)) {
+            return false;
         }
-        input.addClass('jq-couponcode-good');
-        self.part[index].value = code;
+        if(code.length < 4) {
+            return focussed ? null : false;
+        }
+        if(code.charAt(3) != checkdigit(code, index + 1)) {
+            return false;
+        }
         if(val != code) {
             input.val(code);
         }
-        if(focused && index < self.last_part) {
-            self.part[index + 1].input.focus();
+        if(focussed && (index < self.parts - 1)) {
+            self.inputs[index + 1].focus();
+        }
+        return true;
+    }
+
+    function clean_up(code) {
+        code = code.toUpperCase()
+               .replace(/ /g, '')
+               .replace(/O/g, '0')
+               .replace(/I/g, '1')
+               .replace(/S/g, '5')
+               .replace(/Z/g, '2');
+        return code;
+    }
+
+    function checkdigit(data, pos) {
+        var check = pos;
+        for(var i = 0; i < 3; i++) {
+            var k = SYMBOL_SET.indexOf( data.charAt(i) );
+            check = check * 19 + k;
+        }
+        return SYMBOL_SET.charAt(check % 31);
+    }
+
+    function update_hidden_field() {
+        var parts    = [];
+        var old_code = hidden.val();
+        $( self.inputs ).each(function(i, input) {
+            parts.push(input.val());
+        });
+        var new_code = parts.join('-');
+        if(old_code == new_code) {
+            return;
+        }
+        hidden.val(new_code);
+        if(self.onChange) {
+            var good_parts = 0;
+            $( self.flags ).each(function(i, val) { good_parts = good_parts + val; });
+            self.onChange(good_parts === self.parts);
         }
     }
 
 };
 
 $.fn.couponCode.defaults = {
-    template  : '5-5-5',
+    parts     : 3,
     separator : '-'
 };
 
