@@ -4,42 +4,117 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   <title>CouponCode Test Page</title>
-  <script type="text/javascript" src="jquery-1.4.2.min.js"></script>
-  <script type="text/javascript" src="jquery.couponcode.js"></script>
   <link rel="stylesheet" type="text/css" href="style.css">
+  <link rel="stylesheet" type="text/css" href="simpletabs.css">
+  <script type="text/javascript" src="jquery-1.4.2.min.js"></script>
+  <script type="text/javascript" src="simpletabs.js"></script>
+  <script type="text/javascript" src="jquery.couponcode.js"></script>
   <script type="text/javascript">
 
-    jQuery(document).ready(function(){
+    jQuery(document).ready(function($){
 
-        (function ($) {
-            $('#registration-code').couponCode({
-                template: '4-4-4'
-            });
-        })(jQuery);
+        $('#registration-code').couponCode({
+            parts   : 3,
+            onChange: function(valid) {
+                          submit = $('#demo-form input[type="submit"]');
+                          if(valid) {
+                              submit.removeAttr('disabled');
+                          }
+                          else {
+                              submit.attr('disabled', 'disabled');
+                          }
+                      }
+        });
+
+        $('#demo-form').submit(function(e) {
+            var val = $('#registration-code').val();
+            alert("Hidden form field contains: '" + val + "'");
+            e.preventDefault();
+        });
 
     });
+
   </script>
 </head>
 <body>
 
   <h1>CouponCode Test Page</h1>
 
-  <form>
-    <input id="registration-code" name="registration_code" />
-    <input type="submit" value="Continue" />
-  </form>
+  <div class="container">
 
-  <pre>Sample codes:
-XACW-48AB-N0VA
-MN1P-18XM-SHS6
-6Z22-96Y0-V9SS
-HFG0-VFRP-NK84
-G7MD-4XE8-RPW4
-G0X5-7AB2-Q6W6
-XTGH-FK5A-9W2D
-AYDH-ED4V-Z9ZS
-4RTC-FGW5-53PW
-BR6S-3Z7T-XNHA</pre>
+    <ul class="tabs">
+        <li><a href="#demo">Demo</a></li>
+        <li><a href="#about">About CouponCode</a></li>
+    </ul>
+
+    <div class="tab_container">
+      <div id="demo" class="tab_content">
+
+        <p>Your users might be presented with a form like this:</p>
+
+        <form id="demo-form">
+          <p>Please enter your registration code:</p>
+          <p><input id="registration-code" name="registration_code" />
+          <input type="submit" value="Continue" disabled="disabled" /></p>
+        </form>
+
+        <p>Sample codes look like this:</p>
+
+        <pre>
+FLY6-HFE4-VE0D
+3UQG-R1W6-76JH
+LB85-M10M-E0B5
+E8MU-9A0E-NFHN
+TYPQ-F3UV-QC2M
+72JJ-J9C1-Y5GB
+DQV8-YAL9-RW4R
+EA9N-QVAF-PRPM
+PM98-W5MX-1RD5
+2HCB-VRLH-6B2E
+7D3T-W0BJ-4NE9</pre>
+
+      </div>
+
+      <div id="about" class="tab_content">
+
+        <p>CouponCodes are designed to be distributed in printed form and typed
+        into a web form.  Features of the codes that make them well suited to
+        manual transcription:</p>
+
+        <ul>
+
+          <li>The codes are not case sensitive.</li>
+
+          <li>Not all letters and numbers are used, so if a person enters the
+          letter 'O' we can automatically correct it to the digit '0'
+          (similarly for I ⇨ 1, S ⇨ 5, Z ⇨ 2).</li>
+
+          <li>The 4th character of each part is a checkdigit, so client-side
+          scripting can be used to highlight parts which have been mis-typed,
+          before the code is even submitted to the application's back-end
+          validation.</li>
+
+          <li>The checkdigit algorithm takes into account the position of the
+          part being keyed. So for example '1K7Q' might be valid in the first
+          part but not in the second so if a user typed the parts in the wrong
+          boxes then their error could be highlighted.</li>
+
+          <li>The code generation algorithm avoids 'undesirable' codes. For
+          example any code in which transposed characters happen to result in a
+          valid checkdigit will be skipped. Any generated part which happens to
+          spell an 'inappropriate' 4-letter word (e.g.: 'P00P') will also be
+          skipped.</li>
+
+        </ul>
+
+        <p>Codes can be generated and validated on the server using the
+        <a href="/perldoc/Algorithm::CouponCode">Algorithm::CouponCode</a>
+        Perl Module.</p>
+
+      </div>
+
+    </div>
+  </div>
 
 </body>
 </html>
