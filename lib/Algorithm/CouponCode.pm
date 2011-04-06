@@ -9,7 +9,6 @@ Algorithm::CouponCode - Generate and validate 'CouponCode' strings
 use 5.010;
 use warnings;
 use strict;
-use autodie;
 
 
 use Try::Tiny;
@@ -108,7 +107,7 @@ sub _default_bad_word_list {
 
 sub _random_plaintext {
     if($have_urandom) {
-        open my $fh, '<', $urandom_path;
+        open my $fh, '<', $urandom_path or die "open($urandom_path): $!";
         sysread $fh, my $buf, 8;
         return $buf;
     }
