@@ -11,3 +11,4 @@ MANIFEST.SKIP
 ^MakeMaker-\d
 \.old$
 \.bak$
+^libalgorithm-couponcode-perl.*deb$
