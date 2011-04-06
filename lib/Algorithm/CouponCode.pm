@@ -11,7 +11,6 @@ use warnings;
 use strict;
 
 
-use Try::Tiny;
 use Exporter     qw(import);
 use Digest::SHA1 qw(sha1);
 
