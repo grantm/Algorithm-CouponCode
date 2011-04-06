@@ -11,8 +11,6 @@ use warnings;
 use strict;
 use autodie;
 
-our $VERSION = '1.000';
-
 
 use Try::Tiny;
 use Exporter     qw(import);
