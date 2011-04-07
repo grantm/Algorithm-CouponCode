@@ -30,23 +30,26 @@ sub cc_generate {
     my $parts     = $arg{parts} || 3;
     my $plaintext = $arg{plaintext} // _random_plaintext();
     my $bad_words = $arg{bad_regex} || $bad_regex;
-    my($sha1_hash);
+    my($sha1_hash, @code);
 
-    RETRY: while(1) {
+    RANDOM_HASH: {
         $sha1_hash = sha1($plaintext);
         my @bytes  = map { ord($_) & 31 } split //, $sha1_hash;
-        my @code;
-        foreach my $i (1..$parts) {
-            my $str = join '', map { $sym[shift @bytes] } (0, 1, 2);
-            push @code, $str . _checkdigit_alg_1($str, $i);
-            next RETRY if $code[-1] =~ $bad_words;
-            next RETRY if _valid_when_swapped($code[-1], $i);
+        TRY_PART: while(@code < $parts) {
+            if(@bytes < 3) {
+                $plaintext = $sha1_hash;
+                redo RANDOM_HASH;
+            }
+            my $i    = @code + 1;
+            my $str  = join '', map { $sym[shift @bytes] } (0, 1, 2);
+            my $part = $str . _checkdigit_alg_1($str, $i);
+            next TRY_PART if $part =~ $bad_words;
+            next TRY_PART if _valid_when_swapped($part, $i);
+            push @code, $part;
         }
-        return join '-', @code;
     }
-    continue {
-        $plaintext = $sha1_hash;
-    }
+
+    return join '-', @code;
 }
 
 
