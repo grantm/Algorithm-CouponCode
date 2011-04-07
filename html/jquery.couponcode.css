@@ -1,0 +1,21 @@
+
+input.jq-couponcode-part {
+  font-family: monospace;
+  width: 3em;
+  text-align: center;
+}
+
+input.jq-couponcode-good {
+  background-color: #77ff77;
+}
+
+input.jq-couponcode-bad {
+  background-color: #ff7777;
+}
+
+span.jq-couponcode-sep {
+  font-family: monospace;
+  font-weight: bold;
+  padding: 0 0.2em;
+}
+

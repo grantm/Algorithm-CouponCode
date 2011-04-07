@@ -1,0 +1,38 @@
+body {
+  font-size: 110%;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  font-family: sans-serif;
+  background-color: #dddddd;
+  color: #003366;
+  text-align: center;
+  padding: 16px;
+  margin: 0 0 60px 0;
+  border-bottom: 1px solid #aaaaaa;
+}
+
+div.container {
+  width: 460px;
+  margin: 30px auto 100px auto;
+  border: 1px solid #cccccc;
+  padding: 1.0em 1.8em;
+}
+
+form {
+  margin: 1.2em 0em;
+  background-color: #aaccee;
+  text-align: center;
+  padding: 16px 0;
+}
+
+form input {
+  font-size: 24px;
+}
+
+input#registration-code {
+  width: 9em;
+}
+

@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <title>CouponCode Test Page</title>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+  <script type="text/javascript" src="jquery.couponcode.js"></script>
+  <link rel="stylesheet" type="text/css" href="jquery.couponcode.css">
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <script type="text/javascript">
+
+    jQuery(document).ready(function($){
+
+        $('#registration-code').couponCode({
+            parts   : 3,
+            onChange: function(valid) {
+                          submit = $('#demo-form input[type="submit"]');
+                          if(valid) {
+                              submit.removeAttr('disabled');
+                          }
+                          else {
+                              submit.attr('disabled', 'disabled');
+                          }
+                      }
+        });
+
+        $('#demo-form').submit(function(e) {
+            var val = $('#registration-code').val();
+            alert("Hidden form field contains: '" + val + "'");
+            e.preventDefault();
+        });
+
+    });
+
+  </script>
+</head>
+<body>
+
+  <h1>CouponCode Test Page</h1>
+
+  <div class="container">
+
+    <p>Test Form:</p>
+
+    <form id="demo-form">
+      <p>Please enter your registration code:</p>
+      <p><input id="registration-code" name="registration_code" />
+      <input type="submit" value="Continue" disabled="disabled" /></p>
+    </form>
+
+    <p>Sample codes look like this:</p>
+
+    <pre>
+T13P-2LMP-E0B5
+HA0B-R1W6-76JH
+5QMU-M10M-VE0D
+FLY6-9A0E-NFHN
+TYPQ-F3UV-QC2M
+72JJ-J9C1-Y5GB
+DQV8-YAL9-RW4R
+EA9N-QVAF-PRPM
+PM98-W5MX-1RD5
+2HCB-VRLH-6B2E
+7D3T-W0BJ-4NE9</pre>
+    <p>The first code could be entered as: <code>ti3pzlmpeobs</code></p>
+
+  </div>
+
+</body>
+</html>
