@@ -89,6 +89,7 @@ sub make_bad_regex {
         s/[S5]/[S5]/g;
         s/[Z2]/[Z2]/g;
         s/[E3]/[E3]/g;
+        s/[A4]/[A4]/g;
         $_;
     } @word_list;
     return qr{\A(?:$words)\z};
