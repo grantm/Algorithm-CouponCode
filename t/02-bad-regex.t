@@ -3,7 +3,6 @@
 use strict;
 use warnings;
 
-use Try::Tiny;
 use Test::More;
 use Algorithm::CouponCode qw(make_bad_regex cc_generate);
 
