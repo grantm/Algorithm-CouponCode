@@ -13,3 +13,4 @@ MANIFEST.SKIP
 \.bak$
 ^misc
 ^libalgorithm-couponcode-perl.*deb$
+^README.markdown$
