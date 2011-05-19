@@ -216,6 +216,14 @@ the validator function, in the form of a jQuery plugin.  You can include this
 in your web application to do client-side validation and highlighting of
 errors.
 
+I<Note> the cc_validate function and the Javascript plugin only validate that
+the code is 'well-formed' (i.e.: each part has a valid checkdigit).  Checking
+whether the code is in fact 'valid' is left up to your application and would
+typically involve looking for the code in a database.  If you use the
+Javascript plugin, you might choose to tweak the CSS to keep the red
+highlighting of checksum errors but remove the green highlighting which might
+imply the code was correct.
+
 =head2 Randomness and Uniqueness
 
 The code returned by C<cc_generate()> is random, but not necessarily unique.

@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - POD update to clarify intent of validation
   - fix Javascript to work on older versions of IE
   - add Javascript option to set intial focus
 
