@@ -2,15 +2,25 @@
 input.jq-couponcode-part {
   font-family: monospace;
   width: 3em;
-  text-align: center;
+  text-align: right;
+  padding: 2px 4px 0px 16px;
 }
 
 input.jq-couponcode-good {
   background-color: #77ff77;
+  background-image: url(cc_icons.png);
+  background-position: -5px -56px;
+}
+
+input.jq-couponcode-good-nohighlight {
+  text-align: center;
+  padding: 2px 10px 2px 10px;
 }
 
 input.jq-couponcode-bad {
   background-color: #ff7777;
+  background-image: url(cc_icons.png);
+  background-position: -5px -103px;
 }
 
 span.jq-couponcode-sep {
