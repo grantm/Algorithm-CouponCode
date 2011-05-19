@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - fix Javascript to work on older versions of IE
+  - add Javascript option to set intial focus
 
 1.000     2011-04-13 12:26:35 Pacific/Auckland
   - Remove redundant reference to Try::Tiny

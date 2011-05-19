@@ -52,6 +52,9 @@ $.fn.couponCode.build = function(base_entry, options) {
         .focus( function() { self.focus = i; } );
     });
     wrapper.append(inner);
+    if(self.setFocus) {
+        self.inputs[0].focus();
+    }
 
     function validate(index) {
         var input  = self.inputs[index];
@@ -137,7 +140,8 @@ $.fn.couponCode.build = function(base_entry, options) {
 
 $.fn.couponCode.defaults = {
     parts     : 3,
-    separator : '-'
+    separator : '-',
+    setFocus  : false,
 };
 
 })(jQuery);
