@@ -47,7 +47,7 @@ $.fn.couponCode.build = function(base_entry, options) {
     }
     $( self.inputs ).each(function(i, input) {
         input
-        .keypress(function() { setTimeout(function() { validate(i); }, 5 ); } )
+        .keydown(function() { setTimeout(function() { validate(i); }, 5 ); } )
         .blur(function() { self.focus = null; validate(i); } )
         .focus( function() { self.focus = i; } );
     });
