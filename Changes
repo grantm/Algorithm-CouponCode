@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+1.002     2011-05-22 20:19:15 Pacific/Auckland
   - no code changes - just CSS tweaks
 
 1.001     2011-05-20 00:07:17 Pacific/Auckland
