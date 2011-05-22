@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - no code changes - just CSS tweaks
 
 1.001     2011-05-20 00:07:17 Pacific/Auckland
   - POD update to clarify intent of validation

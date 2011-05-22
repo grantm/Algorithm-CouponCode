@@ -1,15 +1,16 @@
 
 input.jq-couponcode-part {
   font-family: monospace;
-  width: 66px;
-  text-align: right;
-  padding: 2px 4px 0px 16px;
+  font-size: 22px;
+  width: 60px;
+  text-align: left;
+  padding: 2px 23px 0px 3px;
 }
 
 input.jq-couponcode-good {
   background-color: #77ff77;
   background-image: url(cc_icons.png);
-  background-position: -5px -56px;
+  background-position: 52px -56px;
 }
 
 input.jq-couponcode-good-nohighlight {
@@ -20,7 +21,7 @@ input.jq-couponcode-good-nohighlight {
 input.jq-couponcode-bad {
   background-color: #ff7777;
   background-image: url(cc_icons.png);
-  background-position: -5px -103px;
+  background-position: 52px -103px;
 }
 
 span.jq-couponcode-sep {
