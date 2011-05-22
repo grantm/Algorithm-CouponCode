@@ -141,7 +141,7 @@ $.fn.couponCode.build = function(base_entry, options) {
 $.fn.couponCode.defaults = {
     parts     : 3,
     separator : '-',
-    setFocus  : false,
+    setFocus  : false
 };
 
 })(jQuery);
