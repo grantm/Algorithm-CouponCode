@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+1.003     2011-05-23 21:27:20 Pacific/Auckland
+  - more Javascript fixes for IE compatibility
+
 1.002     2011-05-22 20:19:15 Pacific/Auckland
   - no code changes - just CSS tweaks
 
