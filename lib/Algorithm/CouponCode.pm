@@ -336,6 +336,10 @@ L<http://cpanratings.perl.org/d/Algorithm::CouponCode>
 
 L<http://search.cpan.org/dist/Algorithm::CouponCode/>
 
+=item * Source Code Respository
+
+L<http://github.com/grantm/Algorithm-CouponCode>
+
 =back
 
 
