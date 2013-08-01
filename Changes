@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Change dependency from Digest::SHA1 to Digest::SHA
 
 1.003     2011-05-23 21:27:20 Pacific/Auckland
   - more Javascript fixes for IE compatibility
