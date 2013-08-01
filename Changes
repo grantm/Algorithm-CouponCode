@@ -4,6 +4,7 @@ Revision history for {{$dist->name}}
   - Change dependency from Digest::SHA1 to Digest::SHA
 
 1.003     2011-05-23 21:27:20 Pacific/Auckland
+  - Javascript change: allow paste of full code into first field
   - more Javascript fixes for IE compatibility
 
 1.002     2011-05-22 20:19:15 Pacific/Auckland
