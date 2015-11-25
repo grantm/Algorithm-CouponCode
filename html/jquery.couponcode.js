@@ -31,6 +31,7 @@ $.fn.couponCode.build = function(base_entry, options) {
         return;
     }
 
+    var start_val = $(base_entry).val();
     var name    = base_entry.name;
     var id      = base_entry.id;
     var wrapper = $( $(base_entry).wrap('<span class="jq-couponcode" />').parent()[0] );
@@ -51,16 +52,20 @@ $.fn.couponCode.build = function(base_entry, options) {
         .blur(function() { self.focus = null; validate(i); } )
         .focus( function() { self.focus = i; } );
     });
-    self.inputs[0].on('paste', function(e) {
-        setTimeout(function() { after_paste(e); }, 2);
+    self.inputs[0].on('paste', function() {
+        setTimeout(function() { set_parts(self.inputs[0].val()); }, 2);
     });
+
+    if(start_val.length > 0) {
+        set_parts(start_val);
+    }
     wrapper.append(inner);
     if(self.setFocus) {
         self.inputs[0].focus();
     }
 
-    function after_paste(e) {
-        var parts = self.inputs[0].val().split('-');
+    function set_parts(code) {
+        var parts = code.split('-');
         for(var i = 0; i < self.parts; i++) {
             self.inputs[i].val( parts[i] || '');
             validate(i);
