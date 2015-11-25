@@ -1,13 +1,12 @@
-Algorithm::CouponCode
-=====================
+CouponCode
+==========
 
-This Perl [CPAN module][1]  is used for generating and validating 'CouponCode'
-strings.   A 'CouponCode' is a code that will be passed in printed form to
+A 'CouponCode' is a type of code that will be passed *in printed form* to
 someone who will be expected to type it into a web page or other application.
+The codes are random strings which are designed to be easy for the recipient to
+type accurately into a web form.
 
-Coupon Codes are random codes which are easy for the recipient to type
-accurately into a web form.  Features of the codes that make them well suited
-to manual transcription:
+The following features make the codes well suited to manual transcription:
 
 * The codes are not case sensitive.
 * Not all letters and numbers are used, so if a person enters the letter 'O' we
@@ -25,10 +24,26 @@ to manual transcription:
   will be skipped. Any generated part which happens to spell an 'inappropriate'
   4-letter word (e.g.: 'P00P') will also be skipped.
 
-The Algorithm-CouponCode distribution includes a [Javascript implementation][2]
-of the validator function, in the form of a jQuery plugin. You can include this
-in your web application to do client-side validation and highlighting of
-errors.
+Algorithm::CouponCode
+---------------------
 
-  [1]: http://search.cpan.org/dist/Algorithm-CouponCode/
-  [2]: http://search.cpan.org/dist/Algorithm-CouponCode/html/index.html "search.cpan.org"
+This git repository contains:
+
+* the Perl [CPAN module](http://search.cpan.org/dist/Algorithm-CouponCode/)
+which implements the code generation algorithm and the server-side validation
+* a [Javascript implementation](http://search.cpan.org/dist/Algorithm-CouponCode/html/index.html)
+of the validator function, in the form of a jQuery plugin, which can be
+included in your web application to do client-side validation and highlighting
+of errors
+
+Alternative implementations
+---------------------------
+
+The code generation and server-side validation routines have been ported to
+other languages (_Note: a listing here does not constitute an endorsement nor a
+guarantee of compatibility_):
+
+
+* [Javascript for Node.js](https://www.npmjs.com/package/coupon-code)
+* [Ruby](https://rubygems.org/gems/coupon_code/versions/0.0.1)
+* [PHP](https://github.com/atelierdisko/coupon_code)

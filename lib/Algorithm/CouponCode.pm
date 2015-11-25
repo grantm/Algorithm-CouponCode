@@ -343,9 +343,32 @@ L<http://github.com/grantm/Algorithm-CouponCode>
 =back
 
 
+=head1 ALTERNATIVE IMPLEMENTATIONS
+
+The code generation and server-side validation routines have been ported to
+other languages (I<Note: a listing here does not constitute an endorsement nor
+a guarantee of compatibility>):
+
+=over 4
+
+=item *
+
+Javascript for Node.js: L<https://www.npmjs.com/package/coupon-code>
+
+=item *
+
+Ruby: L<https://rubygems.org/gems/coupon_code/versions/0.0.1>
+
+=item *
+
+PHP: L<https://github.com/atelierdisko/coupon_code>
+
+=back
+
+
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2011 Grant McLean C<< <grantm@cpan.org> >>
+Copyright 2011-2015 Grant McLean C<< <grantm@cpan.org> >>
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of either: the GNU General Public License as published
