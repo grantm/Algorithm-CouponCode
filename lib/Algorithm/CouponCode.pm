@@ -320,9 +320,13 @@ You can also look for information at:
 
 =over 4
 
-=item * RT: CPAN's request tracker
+=item * Github project issue tracker
 
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Algorithm::CouponCode>
+L<https://github.com/grantm/Algorithm-CouponCode/issues>
+
+=item * Source Code Respository
+
+L<http://github.com/grantm/Algorithm-CouponCode>
 
 =item * AnnoCPAN: Annotated CPAN documentation
 
@@ -332,13 +336,9 @@ L<http://annocpan.org/dist/Algorithm::CouponCode>
 
 L<http://cpanratings.perl.org/d/Algorithm::CouponCode>
 
-=item * Search CPAN
+=item * metacpan
 
-L<http://search.cpan.org/dist/Algorithm::CouponCode/>
-
-=item * Source Code Respository
-
-L<http://github.com/grantm/Algorithm-CouponCode>
+L<https://metacpan.org/release/Algorithm-CouponCode>
 
 =back
 
