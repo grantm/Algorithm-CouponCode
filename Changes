@@ -2,6 +2,10 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+1.005     2015-11-25 21:09:15+13:00 Pacific/Auckland
+  - update docs to link to ports to other languages
+  - allow JS plugin to pre-populate fields from value attribute
+
 1.004     2013-08-02 10:07:30 Pacific/Auckland
   - Change dependency from Digest::SHA1 to Digest::SHA
 
