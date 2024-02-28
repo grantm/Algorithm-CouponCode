@@ -47,3 +47,6 @@ guarantee of compatibility_):
 * [Javascript for Node.js](https://www.npmjs.com/package/coupon-code)
 * [Ruby](https://rubygems.org/gems/coupon_code/versions/0.0.1)
 * [PHP](https://github.com/atelierdisko/coupon_code)
+* [C#](https://github.com/rebeccapowell/csharp-algorithm-coupon-code)
+* [Go](https://github.com/CaptainCodeman/couponcode)
+* [Elixir](https://hexdocs.pm/coupon_code_ex/CouponCode.html)
